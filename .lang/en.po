@@ -1,0 +1,43 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WifiQR 3.12.2\n"
+"PO-Revision-Date: 2020-01-12 17:17 UTC\n"
+"Last-Translator: luisgulo <luisgulo@gmail.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .project:1 FMain.form:15
+msgid "WIFI & QR"
+msgstr "WIFI & QR"
+
+#: .project:2
+msgid "Recupera tus claves WIFI y genera conexiones a ellas como códigos QR"
+msgstr "Recover your WIFI keys and generate connections to them as QR codes"
+
+#: FMain.form:29
+msgid "WiFi a las que te has conectado"
+msgstr "WiFi you have connected to"
+
+#: FMain.form:34
+msgid "abc123ABC"
+msgstr "abc123ABC"
+
+#: frmRootPassword.form:11
+msgid "Necesario usar clave de 'root'"
+msgstr "You need to use 'root' password"
+
+#: frmRootPassword.form:22
+msgid "Contraseña de 'root'"
+msgstr "'root' password"
+
+#: frmRootPassword.form:27
+msgid "Aceptar"
+msgstr ""
+
+#: frmRootPassword.form:33
+msgid " Salir"
+msgstr "Quit"
+

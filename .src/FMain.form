@@ -1,0 +1,50 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,50,62)
+  Text = ("WIFI & QR")
+  Icon = Picture["WifiQR-icono.png"]
+  Resizable = False
+  { CheckMostrarClave CheckBox
+    MoveScaled(40,9,8,4)
+    Enabled = False
+    Text = (" ")
+  }
+  { ComboWIFIS ComboBox
+    MoveScaled(2,3,36,4)
+    Enabled = False
+    ReadOnly = True
+    Text = ("WiFi a las que te has conectado")
+  }
+  { txtClave TextBox
+    MoveScaled(7,9,32,4)
+    Text = ("abc123ABC")
+    ReadOnly = True
+    Password = True
+  }
+  { imagenQR PictureBox
+    MoveScaled(2,14,46,46)
+    Expand = True
+    Border = Border.Plain
+    Stretch = True
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(40,1,8,8)
+    Picture = Picture["WifiQR-icono.png"]
+    Stretch = True
+  }
+  { OjoVerClave PictureBox
+    MoveScaled(43,9,5,5)
+    Enabled = False
+    Picture = Picture["icon:/32/watch"]
+  }
+  { botonClaveRoot Button
+    MoveScaled(2,9,4,4)
+    Picture = Picture["icon:/22/unlock"]
+  }
+  { botonGrabarQR Button
+    MoveScaled(43,56,5,4)
+    Enabled = False
+    Picture = Picture["icon:/22/save"]
+  }
+}

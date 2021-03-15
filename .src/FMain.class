@@ -1,0 +1,102 @@
+' Gambas class file
+
+'' Generar Imagen QR desde consola
+' echo 'WIFI:S:IDENTIFICADOR_WIFI;T:WEP;P:ABC1234;;' |qrencode -o /tmp/qr2.png -s 9 -v l
+' Idem pero generar hacia standard output
+' echo 'WIFI:S:IDENTIFICADOR_WIFI;T:WEP;P:ABC1234;;' |qrencode -o - -s 9 -v 3
+' Codificacion(T) => WEP/WPA/nopass
+Public RootPassword As String = ""
+Public RutaWIFIS As String = "/etc/NetworkManager/system-connections"
+
+Public Sub Form_Open()
+  System.Shell = "/bin/bash"
+  Me.Text = "WIFI & QR " & "  Versión " & Application.Version
+  RellenarWifis()
+  ' Pintamos QR de Ejemplo
+  GeneraImagenWifiQR("SOLO_CON_LINUX", "WPA", "ABCD1234")
+  Me.Show
+  'Pedimos clave de Root y comprobamos si es correcta
+  frmRootPassword.ShowModal
+  CompruebaPwRoot()
+End
+
+Public Function RellenarWifis()
+  'Buscar lista de Wifis a las que se ha conectado el equipo alguna vez
+  Dim Fichero As String
+  For Each Fichero In Dir(RutaWIFIS).Sort()
+    ComboWIFIS.Add(Fichero)
+  Next
+End
+
+
+Public Sub CheckMostrarClave_Click()
+  If CheckMostrarClave.Value
+    txtClave.Password = False
+    Else
+      txtClave.Password = True
+  Endif
+End
+
+Public Sub OjoVerClave_MouseDown()
+  CheckMostrarClave_Click()
+  CheckMostrarClave.Value = Not CheckMostrarClave.Value
+End
+
+Public Sub ComboWIFIS_Click()
+ Dim FicheroWifi As String
+ FicheroWifi = Shell$(RutaWIFIS & "/" & ComboWIFIS.Current.Text)
+  'Message("Ahora es:" & FicheroWifi)
+  'Cargar Valores
+  Dim SSID As String
+  Dim TIPO As String
+  Dim CLAVE As String
+  Shell "echo -n $(echo " & RootPassword & " | su --session-command \"grep -i 'SSID' " & FicheroWifi & "\" | awk -F '=' '{print $2}')" To SSID 
+  Shell "echo -n $(echo " & RootPassword & " | su --session-command \"grep -i 'KEY-MGMT' " & FicheroWifi & "\" | awk -F '=' '{print $2}')" To TIPO 
+  Shell "echo -n $(echo " & RootPassword & " | su --session-command \"grep -i 'PSK=' " & FicheroWifi & "\" | awk -F '=' '{print $2}')" To CLAVE 
+  txtClave.Text = CLAVE
+  GeneraImagenWifiQR(SSID, TIPO, CLAVE)
+End
+
+
+Public Sub botonClaveRoot_Click()
+  frmRootPassword.ShowModal
+  CompruebaPwRoot()
+End
+
+Public Function CompruebaPwRoot()
+  Dim Resultado As String
+  Dim F1 As String
+  F1 = Shell$(RutaWIFIS & "/" & ComboWIFIS[0].Text)
+  Shell "echo  " & RootPassword & " | su --session-command \"cat " & F1 & "\" 1>/dev/null 2>/dev/null; echo -n $?" To Resultado
+  'Message("recibi: -" & Resultado & "-")
+  If Resultado = "0"
+    ' Clave Correcta => Desbloqueamos Controles
+    ComboWIFIS.Enabled = True
+    OjoVerClave.Enabled = True
+    CheckMostrarClave.Enabled = True
+    botonGrabarQR.Enabled = True
+  Else
+    ' Clave Incorrecta => Bloqueado
+    ComboWIFIS.Enabled = False
+    OjoVerClave.Enabled = False
+    CheckMostrarClave.Enabled = False   
+    botonGrabarQR.Enabled = False
+  Endif  
+End
+
+Public Sub botonGrabarQR_Click()
+  Dim ruta As String
+  ruta = User.Home & "/WifiQR-" & ComboWIFIS.Current.Text & ".png"
+  imagenQR.Picture.Save(ruta)
+  Message("Conexión WifiQR grabada en: " & ruta)
+End
+
+
+Public Function GeneraImagenWifiQR(SSID As String, TIPO As String, CLAVE As String)
+  'Generamos PNG en formato String
+    Dim TEXTOQR As String
+    'Shell "echo 'WIFI:S:SOLO_CON_LINUX;T:WPA;P:ABC1234;;' |qrencode -o - -s 9 -v 3" To TEXTOQR
+    Shell "echo 'WIFI:S:" & SSID & ";T:" & TIPO & ";P:" & CLAVE & ";;' |qrencode -o - -s 9 -v 3" To TEXTOQR
+    imagenQR.Picture = Picture.FromString(TEXTOQR)
+End
+
